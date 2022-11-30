@@ -19,6 +19,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const catagoriesCollection = client.db('knowledgeHub').collection('catagories')
+        const bookingsCollection = client.db('knowledgeHub').collection('bookings')
         app.get('/catagories', async (req, res) => {
             const query = {}
             const catagories = await catagoriesCollection.find(query).toArray()
@@ -31,6 +32,19 @@ async function run() {
             console.log(query)
             res.send(query)
         })
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const bookings = await bookingsCollection.find(query).toArray();
+            res.send(bookings);
+        })
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result)
+        })
+
+
 
         app.get('/jwt', async (req, res) => {
             const email = req.query.email;
